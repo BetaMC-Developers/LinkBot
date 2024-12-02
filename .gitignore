@@ -1,0 +1,17 @@
+# Node.js related
+node_modules/
+
+# TypeScript build output
+dist/
+
+# Editor/IDE specific
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+npm-debug.log*
+yarn-error.log

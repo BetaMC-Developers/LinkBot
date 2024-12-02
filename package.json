@@ -1,0 +1,35 @@
+{
+	"name": "discordjs-command-handler",
+	"version": "3.0.0",
+	"description": "A feature-rich Discord Bot Handler designed to simplify bot development with support for commands, components, events, and modern Discord features.",
+	"author": "Lukas Baum",
+	"license": "MIT",
+	"main": "src/index.ts",
+	"scripts": {
+		"start": "bun run src/index.ts",
+		"start:node": "ts-node src/index.ts --incremental",
+		"start:build": "node dist/index.js",
+		"fix": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^22.10.1",
+		"prettier": "^3.4.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.7.2",
+		"@sapphire/ts-config": "^5.0.1",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"husky": "^9.1.6",
+		"lint-staged": "^15.2.10"
+	},
+	"dependencies": {
+		"bufferutil": "^4.0.8",
+		"discord.js": "^14.16.3",
+		"dotenv": "^16.4.5",
+		"mysql2": "^3.11.5",
+		"utf-8-validate": "^6.0.5"
+	}
+}
