@@ -77,7 +77,7 @@ function startUpdateChecker() {
 		} catch (error) {
 			console.error("Error checking for updates:", error);
 		}
-	}, 3_000);
+	}, 60_000);
 }
 
 export default new Event({
