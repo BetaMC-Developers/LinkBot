@@ -35,3 +35,23 @@ export const client: ExtendedClient = new ExtendedClient({
 	// await client.deleteCommand(RegisterType, 'command_id_here');
 	// await client.deleteCommands(RegisterType, ['command_id_1', 'command_id_2']);
 })();
+
+process.on("unhandledRejection", (reason, promise) => {
+	console.error("[antiCrash] :: [unhandledRejection]");
+	console.log(promise, reason);
+});
+
+process.on("uncaughtException", (err, origin) => {
+	console.error("[antiCrash] :: [uncaughtException]");
+	console.log(err, origin);
+});
+
+process.on("uncaughtExceptionMonitor", (err, origin) => {
+	console.error("[antiCrash] :: [uncaughtExceptionMonitor]");
+	console.log(err, origin);
+});
+
+process.on("uncaughtMultipleResolves", (type, promise, reason) => {
+	console.error(`[antiCrash] :: [uncaughtMultipleResolves]`);
+	console.log(type, promise, reason);
+});

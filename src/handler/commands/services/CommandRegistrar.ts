@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import path from "node:path";
 import config from "../../../config";
 import type { ExtendedClient } from "../../core/ExtendedClient";

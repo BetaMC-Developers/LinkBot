@@ -75,7 +75,7 @@ export class CommandValidator {
 			blockedRoles: memberRoles
 				? !(command.blockedRoles?.some((roleId: string) => memberRoles.cache.has(roleId)) ?? false)
 				: true,
-			restrictedToOwner: command.restrictedToOwner ? user.id === config.ownerId : true,
+			restrictedToOwner: command.restrictedToOwner ? (config.ownerId?.includes(user.id) ?? false) : true,
 			restrictedToNSFW: command.restrictedToNSFW ? isTextChannel && (channel as TextChannel).nsfw : true,
 			isDisabled: !command.isDisabled,
 		};
