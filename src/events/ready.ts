@@ -35,6 +35,24 @@ async function setNickname(guildId: string, discordID: string, username: string)
 	}
 }
 
+async function addRoleToUser(guildId: string, discordID: string, roleName: string) {
+	console.log(`Attempting to add role "${roleName}" to user ${discordID}`);
+	try {
+		const guild = await client.guilds.fetch(guildId);
+		const member = await guild.members.fetch(discordID);
+		const role = guild.roles.cache.find((role) => role.name === roleName);
+
+		if (role) {
+			await member.roles.add(role);
+			console.log(`Role "${roleName}" added to user ${discordID}`);
+		} else {
+			console.log(`Role "${roleName}" not found in the guild.`);
+		}
+	} catch (error) {
+		console.error(`Failed to add role "${roleName}" to ${discordID}:`, error);
+	}
+}
+
 let lastCheckedTime = Date.now();
 
 function startUpdateChecker() {
@@ -47,6 +65,9 @@ function startUpdateChecker() {
 					console.log(`Setting nickname for user ${discordID} to ${username}`);
 
 					await setNickname(process.env.GUILD_ID, discordID, username);
+
+					console.log(`Adding role to user ${discordID}`);
+					await addRoleToUser(process.env.GUILD_ID, discordID, "BMC Member");
 				}
 			} else {
 				return;
@@ -56,7 +77,7 @@ function startUpdateChecker() {
 		} catch (error) {
 			console.error("Error checking for updates:", error);
 		}
-	}, 60_000);
+	}, 3_000);
 }
 
 export default new Event({
