@@ -1,35 +1,41 @@
 {
-	"name": "discordjs-command-handler",
-	"version": "3.0.0",
-	"description": "A feature-rich Discord Bot Handler designed to simplify bot development with support for commands, components, events, and modern Discord features.",
-	"author": "Lukas Baum",
-	"license": "MIT",
-	"main": "src/index.ts",
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "discord-bot",
+	"author": "Parker W",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
 	"scripts": {
-		"start": "bun run src/index.ts",
-		"start:node": "ts-node src/index.ts --incremental",
-		"start:build": "node dist/index.js",
+		"clean-windows": "if exist dist rd /s /q dist",
+		"clean-linux": "rm -rf dist",
+		"build": "tsc",
+		"check": "prettier --check . && eslint --ext .ts --format=pretty src",
 		"fix": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
-		"build": "tsc"
+		"start": "node --env-file=.env dist/index.js",
+		"deploy": "pnpm run build && node --env-file=.env dist/deploy.js",
+		"dev": "pnpm run build && pnpm run start",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@1blckhrt/logger": "^1.0.1",
+		"@discordjs/core": "^2.0.1",
+		"discord-api-types": "^0.37.116",
+		"discord.js": "^14.17.3",
+		"dotenv": "^16.4.7",
+		"js-yaml": "^4.1.0"
 	},
 	"devDependencies": {
-		"@types/bun": "latest",
-		"@types/node": "^22.10.1",
-		"prettier": "^3.4.1",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.7.2",
-		"@sapphire/ts-config": "^5.0.1",
+		"@commitlint/cli": "^19.6.1",
+		"@commitlint/config-angular": "^19.7.0",
+		"@types/js-yaml": "^4.0.9",
+		"@types/node": "22.10.7",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"husky": "^9.1.6",
-		"lint-staged": "^15.2.10"
-	},
-	"dependencies": {
-		"bufferutil": "^4.0.8",
-		"discord.js": "^14.16.3",
-		"dotenv": "^16.4.5",
-		"mysql2": "^3.11.5",
-		"utf-8-validate": "^6.0.5"
+		"lint-staged": "^15.2.10",
+		"prettier": "^3.3.3",
+		"typescript": "~5.5.4",
+		"zod": "^3.23.8"
 	}
 }

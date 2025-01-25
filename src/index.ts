@@ -1,40 +1,47 @@
-import "dotenv/config";
 import process from "node:process";
-import { AutomaticIntents, ExtendedClient, Features } from "./handler";
+import { fileURLToPath, URL } from "node:url";
+import { client } from "./util/constants/client.js";
+import loadStructures from "./util/functions/loadStructures.js";
+import { isButton, isCommand, isEvent, isModal, isSelectMenu } from "./util/types/index.js";
 
-export const client: ExtendedClient = new ExtendedClient({
-	// "AutomaticIntents" will provide your client with all necessary Intents.
-	// By default, two specific Intents are enabled (Guilds, & MessageContent).
-	// For details or modifications, see the config.ts file.
-	// Manually adding Intents also works.
-	intents: AutomaticIntents,
+const CONFIG = {
+	token: process.env.TOKEN ?? "",
+};
 
-	// "features" allows you to enable specific functionalities for your bot.
-	// Use "Features.All" to enable all features (Events, Commands, Components, etc.).
-	// Alternatively, you can enable only selected features like:
-	// features: [Features.SlashCommands, Features.Buttons]
-	features: [Features.All],
+const commands = await loadStructures(fileURLToPath(new URL("commands", import.meta.url)), isCommand);
 
-	// "disabledFeatures" lets you explicitly disable specific features, even if "Features.All" is used above.
-	// For example, to disable Prefix Commands:
-	// disabledFeatures: [Features.PrefixCommands]
-	// By default, no features are disabled (empty array).
-	disabledFeatures: [],
+for (const command of commands) {
+	client.commands.set(command.data.name, command);
+}
 
-	// Whether to deploy your Slash Commands to the Discord API (refreshes command.data)
-	// Not needed when just updating the execute function.
-	// Keep in mind that guild commands will be deployed instantly
-	// and global commands can take up to one hour.
-	uploadCommands: true,
-});
+const events = await loadStructures(fileURLToPath(new URL("events", import.meta.url)), isEvent);
 
-(async (): Promise<void> => {
-	await client.login(process.env.CLIENT_TOKEN);
-	await client.connectToDatabase();
-	// You can delete commands like this:
-	// await client.deleteCommand(RegisterType, 'command_id_here');
-	// await client.deleteCommands(RegisterType, ['command_id_1', 'command_id_2']);
-})();
+for (const event of events) {
+	client[event.once ? "once" : "on"](event.name, async (...args) => event.execute(...args));
+}
+
+const buttons = await loadStructures(fileURLToPath(new URL("components/buttons", import.meta.url)), isButton);
+
+for (const button of buttons) {
+	client.buttons.set(button.customId, button);
+}
+
+const modals = await loadStructures(fileURLToPath(new URL("components/modals", import.meta.url)), isModal);
+
+for (const modal of modals) {
+	client.modals.set(modal.customId, modal);
+}
+
+const selectMenus = await loadStructures(
+	fileURLToPath(new URL("components/selectMenus", import.meta.url)),
+	isSelectMenu,
+);
+
+for (const selectMenu of selectMenus) {
+	client.selectMenus.set(selectMenu.customId, selectMenu);
+}
+
+await client.login(CONFIG.token);
 
 process.on("unhandledRejection", (reason, promise) => {
 	console.error("[antiCrash] :: [unhandledRejection]");
