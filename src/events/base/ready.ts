@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { setInterval } from "node:timers";
 import { Events } from "discord.js";
 import { load } from "js-yaml";
 import { client } from "../../util/constants/client.js";
@@ -50,25 +51,14 @@ async function loadYAMLFile() {
 	}
 }
 
-async function checkFile() {
-	try {
-		fs.watch(filePath, (eventType, filename) => {
-			if (eventType === "change") {
-				console.log(`File ${filename} changed.`);
-				void loadYAMLFile();
-			}
-		});
-	} catch (error) {
-		console.error(error);
-	}
-}
-
 export default {
 	name: Events.ClientReady,
 	once: true,
 	async execute(client) {
 		client.user.setStatus(BOT_STATUS.Online);
 		logger.success(`Logged in as ${client.user.tag}`);
-		void checkFile();
+		setInterval(() => {
+			void loadYAMLFile();
+		}, 5_000);
 	},
 } as const satisfies Event<Events.ClientReady>;
