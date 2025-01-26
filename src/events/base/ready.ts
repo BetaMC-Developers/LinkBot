@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { setTimeout } from "node:timers";
 import { Events } from "discord.js";
 import { load } from "js-yaml";
 import { client } from "../../util/constants/client.js";
@@ -69,7 +70,10 @@ export default {
 		const watcher = new FolderWatcher(path.dirname(filePath), false);
 		watcher.onChange = async () => {
 			console.log("YML file changed");
-			await loadYAMLFile();
+
+			setTimeout(async () => {
+				await loadYAMLFile();
+			}, 3_000);
 		};
 	},
 } as const satisfies Event<Events.ClientReady>;
