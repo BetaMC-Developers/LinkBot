@@ -16,34 +16,42 @@ const CONFIG = {
 
 const filePath = path.join(os.homedir(), "bmc", "plugins", "DiscordAuthentication", "data.yml");
 
+const processedUserIds = new Set<string>();
+
 async function loadYAMLFile() {
 	try {
 		const fileContents = await fs.promises.readFile(filePath);
 		const data = load(fileContents.toString()) as { authentication?: unknown };
 
 		if (data.authentication) {
-			for (const [, userInfo] of Object.entries(data.authentication)) {
-				console.log(`Processing User: ${userInfo.username}`);
-				console.log(`Discord ID: ${userInfo.discordID}`);
+			const newEntries = Object.entries(data.authentication)
+				.reverse() // This will give the newest entries first
+				.filter(([id]) => !processedUserIds.has(id));
+
+			for (const [, userInfo] of newEntries) {
+				const username = userInfo.username as string;
+				const id = userInfo.discordID as string;
 
 				const guild = client.guilds.cache.first();
+
 				if (!guild) {
-					console.error("No guild found.");
-					return;
+					throw new Error("Guild not found");
 				}
 
-				const member = await guild.members.fetch(userInfo.id);
+				const member = guild.members.cache.get(id);
 
-				if (member) {
-					console.log(`Found member: ${member.user.username}`);
-					await member.setNickname(userInfo.username);
-					console.log(`Set nickname to: ${userInfo.username}`);
+				if (member && member.nickname !== username) {
+					console.log(`Found member: ${username}`);
+					await member.setNickname(username);
+					console.log(`Set nickname to: ${username}`);
 				}
 
-				if (!member.roles.cache.has(CONFIG.memberRole)) {
+				if (member && !member.roles.cache.has(CONFIG.memberRole)) {
 					await member.roles.add(CONFIG.memberRole);
 					console.log(`Added role: ${CONFIG.memberRole}`);
 				}
+
+				processedUserIds.add(id);
 			}
 		}
 	} catch (error) {
@@ -57,8 +65,9 @@ export default {
 	async execute(client) {
 		client.user.setStatus(BOT_STATUS.Online);
 		logger.success(`Logged in as ${client.user.tag}`);
+		void loadYAMLFile();
 		setInterval(() => {
 			void loadYAMLFile();
-		}, 5_000);
+		}, 60_000);
 	},
 } as const satisfies Event<Events.ClientReady>;
