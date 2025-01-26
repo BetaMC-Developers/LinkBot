@@ -2,9 +2,12 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { API } from "@discordjs/core";
 import { REST } from "discord.js";
+import dotenv from "dotenv";
 import logger from "./util/constants/logger.js";
 import loadStructures from "./util/functions/loadStructures.js";
 import { isCommand } from "./util/types/index.js";
+
+dotenv.config();
 
 const CONFIG = {
 	token: process.env.TOKEN ?? "",

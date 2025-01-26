@@ -1,8 +1,11 @@
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
+import dotenv from "dotenv";
 import { client } from "./util/constants/client.js";
 import loadStructures from "./util/functions/loadStructures.js";
 import { isButton, isCommand, isEvent, isModal, isSelectMenu } from "./util/types/index.js";
+
+dotenv.config();
 
 const CONFIG = {
 	token: process.env.TOKEN ?? "",
@@ -42,23 +45,3 @@ for (const selectMenu of selectMenus) {
 }
 
 await client.login(CONFIG.token);
-
-process.on("unhandledRejection", (reason, promise) => {
-	console.error("[antiCrash] :: [unhandledRejection]");
-	console.log(promise, reason);
-});
-
-process.on("uncaughtException", (err, origin) => {
-	console.error("[antiCrash] :: [uncaughtException]");
-	console.log(err, origin);
-});
-
-process.on("uncaughtExceptionMonitor", (err, origin) => {
-	console.error("[antiCrash] :: [uncaughtExceptionMonitor]");
-	console.log(err, origin);
-});
-
-process.on("uncaughtMultipleResolves", (type, promise, reason) => {
-	console.error(`[antiCrash] :: [uncaughtMultipleResolves]`);
-	console.log(type, promise, reason);
-});

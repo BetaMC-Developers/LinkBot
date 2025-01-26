@@ -69,11 +69,6 @@ export default {
 	async execute(client) {
 		client.user.setStatus(BOT_STATUS.Online);
 		logger.success(`Logged in as ${client.user.tag}`);
-
-		try {
-			void checkFile();
-		} catch (error) {
-			console.error(error);
-		}
+		void checkFile();
 	},
 } as const satisfies Event<Events.ClientReady>;

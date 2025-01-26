@@ -39,6 +39,7 @@ export default async function loadStructures<Type>(path: string, predicate: Pred
 
 			if (!predicate(structure)) {
 				console.warn(`The structure: "${structure}" is not valid, skipping...`);
+				console.log(fileURL);
 				continue;
 			}
 
