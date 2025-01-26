@@ -14,7 +14,7 @@ export default {
 			if (
 				message.channelId === CONFIG.channel &&
 				message.channel.type !== ChannelType.DM &&
-				!message.author.bot
+				message.author.id !== message.client.user?.id
 			) {
 				setTimeout(() => {
 					void message.delete();
